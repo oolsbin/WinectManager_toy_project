@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.ServiceMapper">
+	<resultMap type="com.example.demo.vo.ServiceVO" id="cb">
+		<result column="service_circuit_breaker" property="circuitbreakerConfig" typeHandler="com.example.demo.util.JSONTypeHandler"/>
+	</resultMap>
+
+	<!-- 서비스등록 -->
+	<insert id='serviceInsert'>
+		INSERT INTO service_tb(
+			service_id
+			, service_name
+			, service_desc
+			, protocol
+			, target_url
+			, connect_timeout
+			, response_timeout
+			, retries
+			, domain_id
+			, use_circuitbreaker
+			, enabled
+			, unused
+			, update_time
+			, create_time
+			, service_circuit_breaker
+		)
+		VALUES (
+			#{serviceId}
+			, #{serviceName}
+			, #{serviceDesc}
+			, #{protocol}
+			, #{targetUrl}
+			, #{connectTimeout}
+			, #{responseTimeout}
+			, #{retries}
+			, #{domainId}
+			, #{useCircuitbreaker}
+			, #{enabled}
+			, #{unused}
+			, #{createTime}
+			, #{updateTime}
+			, #{circuitbreakerConfig, typeHandler=com.example.demo.util.JSONTypeHandler}::jsonb
+		)
+	</insert>
+	
+	<!-- 서비스수정 -->
+	<update id='serviceUpdate'>
+		UPDATE service_tb
+		   SET service_name = #{serviceName},
+			   service_desc = #{serviceDesc},
+			   protocol = #{protocol},
+			   target_url = #{targetUrl},
+			   connect_timeout = #{connectTimeout},
+			   response_timeout = #{responseTimeout},
+			   retries = #{retries},
+			   domain_id = #{domainId},
+			   use_circuitbreaker = #{useCircuitbreaker},
+			   enabled = #{enabled},
+			   unused = #{unused},
+			   update_time = #{updateTime},
+			   service_circuit_breaker = #{circuitbreakerConfig, typeHandler=com.example.demo.util.JSONTypeHandler}::jsonb
+		 WHERE service_id = #{serviceId} AND domain_id = #{domainId}
+	</update>
+	
+<!-- 	서비스+서킷브레이커 등록 -->
+<!-- 	<insert id='serviceCircuitInsert'> -->
+<!-- 		INSERT INTO service_tb (service_circuit_breaker) -->
+<!-- 		VALUES (#{circuitbreakerConfig}) -->
+<!-- 	</insert> -->
+	
+	<!-- 서비스 사용여부 -->
+	<select id='serviceUnused' resultType='com.example.demo.vo.ServiceVO'>
+		SELECT *
+		  FROM route_tb
+		 WHERE service_id = #{serviceId} AND domain_id = #{domainId}
+	</select>
+	
+	<!-- 등록된 서비스 정보조회 응답 -->
+	<select id='serviceInfo' resultType="com.example.demo.vo.ServiceVO" resultMap="cb">
+		SELECT *
+		  FROM service_tb
+		 WHERE service_id = #{serviceId} AND domain_id = #{domainId}
+	</select>
+	
+	<!-- 서비스 응답값 조회 -->
+	<select id='serviceResponse' resultType="com.example.demo.vo.ServiceVO" resultMap="cb">
+	 	SELECT *
+	   	  FROM service_tb
+	     WHERE service_id = #{serviceId} AND domain_id = #{domainId}
+	</select>
+	
+	<!-- 서비스 전체 목록 조회 + page -->
+	<select id='serviceList' resultType="com.example.demo.vo.ServiceListVO">
+	 	SELECT *
+	   	  FROM service_tb
+	   	 WHERE domain_id = #{domainId}
+	     LIMIT #{numOfRows} OFFSET #{pageNo}
+	</select>
+	
+	<!-- 서비스 검색 목록 조회 + page -->
+	<select id='serviceSearchList' resultMap="cb">
+	 	SELECT *
+	   	  FROM service_tb
+	   	 WHERE
+	   	  <choose>
+		      <when test="serviceName != null and serviceId == null and targetUrl == null">
+		        service_name LIKE CONCAT('%', #{serviceName}, '%')
+		        AND domain_id = #{domainId}
+		      </when>
+		      <when test="serviceName == null and serviceId != null and targetUrl == null">
+		        service_id LIKE CONCAT('%', #{serviceId}, '%')
+		        AND domain_id = #{domainId}
+		      </when>
+		      <when test="serviceName == null and serviceId == null and targetUrl != null">
+		        target_url LIKE CONCAT('%', #{targetUrl}, '%')
+		        AND domain_id = #{domainId}
+		      </when>
+		      <when test="serviceName != null and serviceId != null and targetUrl != null">
+		        service_name LIKE CONCAT('%', #{serviceName}, '%')
+		        AND service_id LIKE CONCAT('%', #{serviceId}, '%')
+		        AND target_url LIKE CONCAT('%', #{targetUrl}, '%')
+		        AND domain_id = #{domainId}
+		      </when>
+		      <otherwise>
+		        1=1
+		      </otherwise>
+		    </choose>
+	     LIMIT #{numOfRows} OFFSET #{pageNo}
+	</select>
+	
+	<!-- 서비스 totalCount -->
+	<select id='serviceTotalCnt' resultType="Integer">
+	 	SELECT COUNT(*)
+	   	  FROM service_tb
+	   	 WHERE
+	   	  <choose>
+		      <when test="serviceName != null and serviceId == null and targetUrl == null">
+		        service_name LIKE CONCAT('%', #{serviceName}, '%')
+		        AND domain_id = #{domainId}
+		      </when>
+		      <when test="serviceName == null and serviceId != null and targetUrl == null">
+		        service_id LIKE CONCAT('%', #{serviceId}, '%')
+		        AND domain_id = #{domainId}
+		      </when>
+		      <when test="serviceName == null and serviceId == null and targetUrl != null">
+		        target_url LIKE CONCAT('%', #{targetUrl}, '%')
+		        AND domain_id = #{domainId}
+		      </when>
+		      <when test="serviceName != null and serviceId != null and targetUrl != null">
+		        service_name LIKE CONCAT('%', #{serviceName}, '%')
+		        AND service_id LIKE CONCAT('%', #{serviceId}, '%')
+		        AND target_url LIKE CONCAT('%', #{targetUrl}, '%')
+		        AND domain_id = #{domainId}
+		      </when>
+		      <otherwise>
+		        1=1
+		      </otherwise>
+		    </choose>
+	</select>
+	
+	<!-- 서비스 삭제 -->
+	<delete id="serviceDelete">
+		DELETE FROM service_tb
+		WHERE service_id = #{serviceId} AND domain_id = #{domainId}
+	</delete>
+	
+</mapper>

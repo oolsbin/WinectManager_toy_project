@@ -1,0 +1,108 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.8'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation "org.springframework.boot:spring-boot-starter-jdbc"
+	
+	implementation 'org.postgresql:postgresql:42.5.0'
+	
+	//https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+	
+	//json 파싱
+	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+	implementation group: 'org.json', name: 'json', version: '20211205'
+	
+	//lombok
+	compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    	
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.12'
+    
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+	implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
+	
+	implementation group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.11.2'
+	implementation "com.fasterxml.jackson.core:jackson-annotations:2.11.2"
+	implementation "com.fasterxml.jackson.core:jackson-databind:2.11.2"
+	implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2"
+	implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2"
+	
+	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+	//implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
+	
+	// MyBatis
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+	implementation group: 'org.mybatis', name: 'mybatis', version: '3.5.6'
+	implementation group: 'commons-dbcp', name: 'commons-dbcp', version: '1.4'
+	implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.3.23'
+
+	
+	//jsp를 사용하기 위한 종속성
+	implementation 'javax.servlet:jstl'
+	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+	
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    //testImplementation 'org.springframework.security:spring-security-test'
+    
+    // https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api
+	implementation group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+
+	// JWT
+	implementation 'com.auth0:java-jwt:3.1.0'
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+	
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+	
+	// https://mvnrepository.com/artifact/commons-collections/commons-collections
+	implementation group: 'commons-collections', name: 'commons-collections', version: '3.2.2'
+	
+	// https://mvnrepository.com/artifact/org.mybatis/mybatis-typehandlers-jsr310
+	implementation group: 'org.mybatis', name: 'mybatis-typehandlers-jsr310', version: '1.0.2'
+
+	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+	
+	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.4'
+	
+	//mongodb
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	
+	//implementation 'org.apache.httpcomponents:httpclient:5.2.1'
+	// https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons
+	
+	//implementation group: 'org.springframework.data', name: 'spring-data-commons', version: '3.0.3'
+
+	//implementation 'org.springframework.boot:spring-boot-starter-neo4j'
+	//implementation 'org.springframework.data:spring-data-jpa'
+	// https://mvnrepository.com/artifact/org.springframework.experimental/spring-aot
+	//implementation group: 'org.springframework.experimental', name: 'spring-aot', version: '0.9.2'
+	
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

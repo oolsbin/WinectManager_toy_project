@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+
+  server:
+    container_name: winect-server
+    image: winect-server:0.0.1
+    restart: always
+    ports:
+      - 29111:3306
+    networks:
+      - winect-network
+networks:
+  winect-network:
+    external: true
+
+
